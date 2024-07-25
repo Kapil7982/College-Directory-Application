@@ -45,6 +45,7 @@ public class UserController {
     }	
 
     @GetMapping("/{email}")
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<Users> getCustomerByEmailHandler(@PathVariable("email") String email) {
 
         Users user = userService.getCustomerDetailsByEmail(email);
@@ -53,6 +54,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<List<Users>> getAllCustomerHandler() {
 
         List<Users> users = userService.getAllCustomerDetails();

@@ -16,13 +16,13 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/students")
-@PreAuthorize("hasAuthority('STUDENT')")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
     @GetMapping("/profile/{userId}")
+    @PreAuthorize("hasAnyAuthority('STUDENT',ADMINISTRATOR)")
     public ResponseEntity<StudentProfile> getStudentProfile(@PathVariable Long userId) {
         StudentProfile profile = studentService.getStudentProfile(userId);
         if (profile != null) {
@@ -33,12 +33,14 @@ public class StudentController {
     }
 
     @PutMapping("/profile")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'STUDENT')")
     public ResponseEntity<StudentProfile> updateStudentProfile(@RequestBody StudentProfile studentProfile) {
         StudentProfile updatedProfile = studentService.updateStudentProfile(studentProfile);
         return ResponseEntity.ok(updatedProfile);
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'FACULTY_MEMBER')")
     public ResponseEntity<List<StudentProfile>> searchStudents(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String department,
@@ -48,6 +50,7 @@ public class StudentController {
     }
 
     @PostMapping("/profile")
+    @PreAuthorize("hasAuthority('ADMINISTRATOR')")
     public ResponseEntity<StudentProfile> createStudentProfile(@RequestBody StudentProfile studentProfile) {
         try {
             StudentProfile createdProfile = studentService.createStudentProfile(studentProfile);

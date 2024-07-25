@@ -36,19 +36,12 @@ public class AppConfig {
             .requestMatchers("/api/users/hello").permitAll() 
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // Allow user registration
-            .requestMatchers("/api/admin/**").hasAuthority("ADMINISTRATOR")
-            .requestMatchers("/api/departments/**").hasAuthority("ADMINISTRATOR")
-            .requestMatchers("/api/faculty/**").hasAuthority("ADMINISTRATOR")
-            .requestMatchers("/api/students/**").hasAuthority("STUDENT")
+         // Allow ADMINISTRATOR access to all endpoints
+            .requestMatchers("/api/**").hasAuthority("ADMINISTRATOR")
             
-            .requestMatchers(HttpMethod.GET, "/api/courses").hasAnyAuthority("STUDENT","FACULTY_MEMBER", "ADMINISTRATOR") // All can view courses
-            .requestMatchers(HttpMethod.GET, "/api/users/{email}").hasAnyAuthority("STUDENT","FACULTY_MEMBER", "ADMINISTRATOR") // All can view courses
-            .requestMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("ADMINISTRATOR") // Only administrators can create courses
-            .requestMatchers(HttpMethod.PUT, "/api/courses/**").hasAuthority("ADMINISTRATOR") // Only administrators can update courses
-            .requestMatchers(HttpMethod.DELETE, "/api/courses/**").hasAuthority("ADMINISTRATOR") // Only administrators can delete courses
-            .requestMatchers(HttpMethod.GET, "/api/faculty/**").hasAuthority("FACULTY_MEMBER")
-            .requestMatchers(HttpMethod.GET,"/api/student/profile/{userId}").hasAuthority("STUDENT")
-            .requestMatchers(HttpMethod.PUT,"/api/student/profile").hasAuthority("STUDENT")
+            .requestMatchers("/api/admin/**").hasAuthority("ADMINISTRATOR")
+            .requestMatchers("/api/students/**").hasAnyAuthority("STUDENT", "ADMINISTRATOR")
+            .requestMatchers("/api/faculty/**").hasAnyAuthority("FACULTY_MEMBER", "ADMINISTRATOR")
             .anyRequest().authenticated()
             .and()
             .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
